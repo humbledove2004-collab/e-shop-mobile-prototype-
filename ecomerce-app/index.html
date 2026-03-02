@@ -17,14 +17,17 @@
 <button id="tabSignIn" class="tab tab-active">Sign in</button>
 <button id="tabSignUp" class="tab">Sign up</button>
 </div>
-<form id="signInForm" class="form">
-<input id="signInEmail" class="input" type="email" placeholder="Email" required>
-<input id="signInPassword" class="input" type="password" placeholder="Password" required>
+<form id="signInForm" class="form" autocomplete="off" novalidate>
+<input id="signInEmail" class="input" type="email" placeholder="Email" required autocomplete="off">
+<input id="signInPassword" class="input" type="password" placeholder="Password" required autocomplete="off">
+<div class="checkbox-group">
+  <label><input id="rememberMe" type="checkbox"> Remember me for 2 weeks</label>
+</div>
 <button type="submit" class="button primary-button">Sign in</button>
 </form>
-<form id="signUpForm" class="form form-hidden">
-<input id="signUpEmail" class="input" type="email" placeholder="Email" required>
-<input id="signUpPassword" class="input" type="password" placeholder="Password (min 6 chars)" required>
+<form id="signUpForm" class="form form-hidden" autocomplete="off" novalidate>
+<input id="signUpEmail" class="input" type="email" placeholder="Email" required autocomplete="off">
+<input id="signUpPassword" class="input" type="password" placeholder="Password (min 6 chars)" required autocomplete="off">
 <button type="submit" class="button secondary-button">Create account</button>
 </form>
 </section>
