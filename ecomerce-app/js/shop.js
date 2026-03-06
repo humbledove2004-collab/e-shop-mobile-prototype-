@@ -9,6 +9,8 @@ import {
   collection,
   addDoc,
   getDocs,
+  deleteDoc,
+  doc,
   query,
   where,
   orderBy,
@@ -61,7 +63,8 @@ const placeOrderButton = document.getElementById("placeOrderButton");
 const signOutButton = document.getElementById("signOutButton");
 const welcomeBanner = document.getElementById("welcomeBanner");
 const productSearch = document.getElementById("productSearch");
-const productCards = document.querySelectorAll(".product-card");
+const productSort = document.getElementById("productSort");
+const productsGrid = document.getElementById("productsGrid");
 const orderHistoryList = document.getElementById("orderHistoryList");
 const shopNavItems = document.querySelectorAll(".shop-nav-item");
 const shopSections = document.querySelectorAll(".shop-section");
@@ -76,34 +79,97 @@ const lightboxDescription = document.getElementById("lightboxDescription");
 const lightboxPrice = document.getElementById("lightboxPrice");
 const lightboxAddToCart = document.getElementById("lightboxAddToCart");
 
-let currentLightboxProduct = null;
+// Lightbox Quantity
+const qtyDec = document.getElementById("qtyDec");
+const qtyInc = document.getElementById("qtyInc");
+const lightboxQty = document.getElementById("lightboxQty");
 
+// New UI Elements
+const stickyBar = document.getElementById("stickyBar");
+const stickyItemCount = document.getElementById("stickyItemCount");
+const stickyTotal = document.getElementById("stickyTotal");
+const stickyGoToCart = document.getElementById("stickyGoToCart");
+const clearCartBtn = document.getElementById("clearCartBtn");
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+const confModal = document.getElementById("confModal");
+const confOrderRef = document.getElementById("confOrderRef");
+const confClose = document.getElementById("confClose");
+const currencySelector = document.getElementById("currencySelector");
+const categoryChips = document.querySelectorAll(".category-chip");
+
+// Currency Configuration
+const CURRENCY_CONFIG = {
+  USD: { symbol: "$", rate: 1 },
+  GHS: { symbol: "GH₵", rate: 15.5 }, // Approximate rate
+  ZAR: { symbol: "R", rate: 19.0 },   // Approximate rate
+  NGN: { symbol: "₦", rate: 1600.0 }  // Approximate rate
+};
+
+let currentCurrency = "USD";
+let activeCategory = "all";
+let currentLightboxProduct = null;
 const cart = [];
 
-// Lightbox logic
-productCards.forEach((card) => {
-  card.addEventListener("click", (e) => {
-    // Don't open lightbox if "Add" button was clicked
-    if (e.target.classList.contains("add-to-cart")) return;
+// Initial Load Simulation (Skeleton Loader)
+async function initShop() {
+  const originalHTML = productsGrid.innerHTML;
+  
+  // Show skeletons
+  productsGrid.innerHTML = Array(6).fill('<div class="product-card skeleton" style="height: 280px;"></div>').join("");
+  
+  // Simulate delay
+  await new Promise(r => setTimeout(r, 1000));
+  
+  productsGrid.innerHTML = originalHTML;
+  updateDisplayCurrencies();
+  refreshProductCards();
+}
 
-    const id = card.getAttribute("data-id");
-    const name = card.getAttribute("data-name");
-    const price = card.getAttribute("data-price");
-    const description = card.getAttribute("data-description");
-    const image = card.querySelector(".product-image").src;
-    const category = card.querySelector(".product-category").textContent;
-
-    currentLightboxProduct = card;
-
-    lightboxImage.src = image;
-    lightboxTitle.textContent = name;
-    lightboxCategory.textContent = category;
-    lightboxDescription.textContent = description;
-    lightboxPrice.textContent = "R " + Number(price).toFixed(2);
-
-    productLightbox.classList.add("active");
-    document.body.style.overflow = "hidden"; // Prevent scroll
+function refreshProductCards() {
+  const cards = document.querySelectorAll(".product-card");
+  cards.forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.classList.contains("add-to-cart")) return;
+      openLightbox(card);
+    });
+    
+    const addBtn = card.querySelector(".add-to-cart");
+    if (addBtn) {
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        addToCartFromCard(card);
+      });
+    }
   });
+}
+
+function openLightbox(card) {
+  const name = card.getAttribute("data-name");
+  const priceBase = parseFloat(card.getAttribute("data-price"));
+  const description = card.getAttribute("data-description");
+  const image = card.querySelector(".product-image").src;
+  const category = card.querySelector(".product-category").textContent;
+
+  currentLightboxProduct = card;
+  lightboxQty.value = 1; // Reset quantity
+
+  lightboxImage.src = image;
+  lightboxTitle.textContent = name;
+  lightboxCategory.textContent = category;
+  lightboxDescription.textContent = description;
+  lightboxPrice.textContent = formatCurrency(priceBase);
+
+  productLightbox.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+qtyInc.addEventListener("click", () => {
+  lightboxQty.value = parseInt(lightboxQty.value) + 1;
+});
+
+qtyDec.addEventListener("click", () => {
+  const val = parseInt(lightboxQty.value);
+  if (val > 1) lightboxQty.value = val - 1;
 });
 
 closeLightbox.addEventListener("click", () => {
@@ -120,41 +186,134 @@ productLightbox.addEventListener("click", (e) => {
 
 lightboxAddToCart.addEventListener("click", () => {
   if (currentLightboxProduct) {
-    addToCartFromCard(currentLightboxProduct);
+    const qty = parseInt(lightboxQty.value);
+    addToCartFromCard(currentLightboxProduct, qty);
+    productLightbox.classList.remove("active");
+    document.body.style.overflow = "";
   }
+});
+
+// Category Filter Logic
+categoryChips.forEach(chip => {
+  chip.addEventListener("click", () => {
+    categoryChips.forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeCategory = chip.getAttribute("data-category");
+    filterProducts();
+  });
+});
+
+function filterProducts() {
+  const term = productSearch.value.toLowerCase();
+  const cards = document.querySelectorAll(".product-card");
+  
+  cards.forEach((card) => {
+    const name = card.getAttribute("data-name").toLowerCase();
+    const category = card.querySelector(".product-category").textContent.toLowerCase();
+    
+    const matchesSearch = name.includes(term) || category.includes(term);
+    const matchesCategory = activeCategory === "all" || category === activeCategory;
+    
+    card.style.display = (matchesSearch && matchesCategory) ? "flex" : "none";
+  });
+}
+
+// Sorting logic
+productSort.addEventListener("change", () => {
+  const mode = productSort.value;
+  const cards = Array.from(document.querySelectorAll(".product-card"));
+  
+  cards.sort((a, b) => {
+    const nameA = a.getAttribute("data-name").toLowerCase();
+    const nameB = b.getAttribute("data-name").toLowerCase();
+    const priceA = parseFloat(a.getAttribute("data-price"));
+    const priceB = parseFloat(b.getAttribute("data-price"));
+    
+    if (mode === "price-low") return priceA - priceB;
+    if (mode === "price-high") return priceB - priceA;
+    if (mode === "name") return nameA.localeCompare(nameB);
+    return 0;
+  });
+  
+  productsGrid.innerHTML = "";
+  cards.forEach(c => productsGrid.appendChild(c));
+  // Re-attach listeners after moving elements
+  refreshProductCards();
 });
 
 // Tab switching logic
 shopNavItems.forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.getAttribute("data-target");
-
-    // Update active button
     shopNavItems.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-
-    // Update visible section
     shopSections.forEach((sec) => {
-      if (sec.id === target) {
-        sec.classList.add("active");
-      } else {
-        sec.classList.remove("active");
-      }
+      sec.classList.toggle("active", sec.id === target);
     });
+    renderCart(); // Update sticky bar visibility based on tab
   });
+});
+
+// Sticky bar button
+stickyGoToCart.addEventListener("click", () => {
+  const cartBtn = Array.from(shopNavItems).find(btn => btn.getAttribute("data-target") === "cartSection");
+  if (cartBtn) cartBtn.click();
+});
+
+clearCartBtn.addEventListener("click", () => {
+  if (cart.length > 0 && confirm("Are you sure you want to clear your cart?")) {
+    cart.length = 0;
+    renderCart();
+    showToast("Cart cleared", "default");
+  }
+});
+
+clearHistoryBtn.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  if (confirm("Are you sure you want to clear your entire order history? This cannot be undone.")) {
+    showToast("Clearing history...", "default");
+    try {
+      const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+      
+      const deletePromises = [];
+      querySnapshot.forEach((document) => {
+        deletePromises.push(deleteDoc(doc(db, "orders", document.id)));
+      });
+      
+      await Promise.all(deletePromises);
+      showToast("Order history cleared", "success");
+      loadOrderHistory(user.uid);
+    } catch (error) {
+      console.error("Error clearing history:", error);
+      showToast("Failed to clear history", "error");
+    }
+  }
+});
+
+// Confirmation Modal button
+confClose.addEventListener("click", () => {
+  confModal.classList.remove("active");
+  const ordersBtn = Array.from(shopNavItems).find(btn => btn.getAttribute("data-target") === "ordersSection");
+  if (ordersBtn) ordersBtn.click();
 });
 
 // Order History
 async function loadOrderHistory(userId) {
   if (!orderHistoryList) return;
+  
+  // Show skeleton/loading state for orders
+  orderHistoryList.innerHTML = '<div class="order-item-history skeleton" style="height: 60px;"></div>';
+  
   try {
-    // Simplified query to check if it's an index issue
-    const q = query(
-      collection(db, "orders"),
-      where("userId", "==", userId)
-      // Temporarily removed orderBy to avoid index requirement
-    );
+    const q = query(collection(db, "orders"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
+    
+    // Artificial delay for effect
+    await new Promise(r => setTimeout(r, 600));
+    
     orderHistoryList.innerHTML = "";
     
     if (querySnapshot.empty) {
@@ -162,7 +321,6 @@ async function loadOrderHistory(userId) {
       return;
     }
 
-    // Sort manually in JS to avoid index requirement for now
     const docs = [];
     querySnapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
     docs.sort((a, b) => {
@@ -185,71 +343,138 @@ async function loadOrderHistory(userId) {
       orderHistoryList.appendChild(div);
     });
   } catch (error) {
-    console.error("Detailed Error loading orders:", error);
-    orderHistoryList.innerHTML = `
-      <div style="color: #ef4444; font-size: 12px;">
-        Failed to load order history.<br>
-        Check console for details.
-      </div>
-    `;
+    console.error("Error loading orders:", error);
+    orderHistoryList.textContent = "Failed to load order history.";
   }
 }
 
 // Search functionality
 productSearch.addEventListener("input", (e) => {
-  const term = e.target.value.toLowerCase();
-  productCards.forEach((card) => {
-    const name = card.getAttribute("data-name").toLowerCase();
-    const category = card.querySelector(".product-category").textContent.toLowerCase();
-    if (name.includes(term) || category.includes(term)) {
-      card.style.display = "flex";
-    } else {
-      card.style.display = "none";
-    }
-  });
+  filterProducts();
 });
 
-function formatCurrency(amount) {
-  return "R " + amount.toFixed(2);
+function formatCurrency(amountBase) {
+  const config = CURRENCY_CONFIG[currentCurrency];
+  const convertedAmount = amountBase * config.rate;
+  return config.symbol + " " + convertedAmount.toFixed(2);
 }
+
+// Update all prices on page
+function updateDisplayCurrencies() {
+  // Update Product Cards
+  const cards = document.querySelectorAll(".product-card");
+  cards.forEach(card => {
+    const priceBase = parseFloat(card.getAttribute("data-price"));
+    const priceSpan = card.querySelector(".price");
+    if (priceSpan) priceSpan.textContent = formatCurrency(priceBase);
+  });
+  
+  // Re-render cart to update symbols/rates
+  renderCart();
+  
+  // Update Lightbox if open
+  if (productLightbox.classList.contains("active") && currentLightboxProduct) {
+    const priceBase = parseFloat(currentLightboxProduct.getAttribute("data-price"));
+    lightboxPrice.textContent = formatCurrency(priceBase);
+  }
+}
+
+// Currency Selector change
+currencySelector.addEventListener("change", (e) => {
+  currentCurrency = e.target.value;
+  updateDisplayCurrencies();
+  showToast(`Currency changed to ${currentCurrency}`, "success");
+});
 
 function renderCart() {
   cartItemsEl.innerHTML = "";
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   if (!cart.length) {
     cartItemsEl.textContent = "Your cart is empty.";
     cartTotalEl.textContent = formatCurrency(0);
+    stickyBar.classList.remove("active");
     return;
   }
-  cart.forEach((item) => {
+  
+  cart.forEach((item, index) => {
     const row = document.createElement("div");
     row.className = "cart-row";
-    row.textContent = item.name + " × " + item.quantity + " (" + formatCurrency(item.price) + ")";
+    row.style.alignItems = "center";
+    
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div style="font-weight:600;">${item.name}</div>
+        <div style="font-size:12px; color:var(--text-muted);">${formatCurrency(item.price * item.quantity)}</div>
+      </div>
+      <div class="cart-qty-row">
+        <button class="cart-qty-btn dec-cart" data-index="${index}">−</button>
+        <span style="font-weight:700; min-width:20px; text-align:center;">${item.quantity}</span>
+        <button class="cart-qty-btn inc-cart" data-index="${index}">+</button>
+      </div>
+    `;
     cartItemsEl.appendChild(row);
   });
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  // Attach cart button listeners
+  document.querySelectorAll(".dec-cart").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = btn.getAttribute("data-index");
+      if (cart[idx].quantity > 1) {
+        cart[idx].quantity--;
+      } else {
+        cart.splice(idx, 1);
+      }
+      renderCart();
+    });
+  });
+  
+  document.querySelectorAll(".inc-cart").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = btn.getAttribute("data-index");
+      cart[idx].quantity++;
+      renderCart();
+    });
+  });
+  
   cartTotalEl.textContent = formatCurrency(total);
+
+  // Update sticky bar
+  stickyItemCount.textContent = count;
+  stickyTotal.textContent = formatCurrency(total);
+  
+  // Show sticky bar only on Products tab and if cart not empty
+  const activeTab = document.querySelector(".shop-nav-item.active").getAttribute("data-target");
+  if (activeTab === "productsSection" && cart.length > 0) {
+    stickyBar.classList.add("active");
+  } else {
+    stickyBar.classList.remove("active");
+  }
 }
 
-function addToCartFromCard(card) {
+function addToCartFromCard(card, qty = 1) {
   const id = card.getAttribute("data-id");
   const name = card.getAttribute("data-name");
   const price = Number(card.getAttribute("data-price"));
   const existing = cart.find((item) => item.id === id);
+  
   if (existing) {
-    existing.quantity += 1;
+    existing.quantity += qty;
   } else {
-    cart.push({ id, name, price, quantity: 1 });
+    cart.push({ id, name, price, quantity: qty });
   }
-  showToast("Added to cart", "success");
+  
+  // Micro-interaction animation
+  card.classList.add("add-to-cart-animate");
+  setTimeout(() => card.classList.remove("add-to-cart-animate"), 300);
+
+  showToast(`Added ${qty} ${name} to cart`, "success");
   renderCart();
 }
 
-document.querySelectorAll(".add-to-cart").forEach((button) => {
-  button.addEventListener("click", () => {
-    const card = button.closest(".product-card");
-    addToCartFromCard(card);
-  });
-});
+// Initial card setup
+initShop();
 
 /**
  * For a real Stripe integration, you usually need a backend to create a Checkout Session.
@@ -285,7 +510,11 @@ async function payWithStripe(user, total) {
 
     cart.length = 0;
     renderCart();
-    showToast("Order placed successfully!", "success");
+    
+    // Show Confirmation Modal
+    confOrderRef.textContent = `Ref: #${transactionId}`;
+    confModal.classList.add("active");
+    
     loadOrderHistory(user.uid);
   } catch (error) {
     console.error("Error saving order:", error);

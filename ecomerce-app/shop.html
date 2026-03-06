@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop</title>
-<link rel="stylesheet" href="styles.css">
+  <title>Catalogue | E-Shop Mobile</title>
+  <meta name="description" content="Shop the best electronics, accessories and more from your phone. Secure payment and fast delivery.">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="E-Shop Mobile Prototype">
+  <meta property="og:description" content="Experience high-quality mobile shopping with our exclusive catalogue.">
+  <meta property="og:image" content="https://images.pexels.com/photos/1152573/pexels-photo-1152573.jpeg">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="top-bar">🚚 Fast & Secure Delivery • Free on orders over $50</div>
 <div class="app-shell">
 <header class="app-header">
 <h1 class="app-title">E-Shop</h1>
@@ -23,197 +30,260 @@
   <div id="productsSection" class="shop-section active">
     <section class="card search-card">
       <input type="text" id="productSearch" class="input" placeholder="Search products...">
+      <select id="currencySelector" class="select" style="width: auto;">
+        <option value="USD">USD ($)</option>
+        <option value="GHS">GHS (GH₵)</option>
+        <option value="ZAR">ZAR (R)</option>
+        <option value="NGN">NGN (₦)</option>
+      </select>
+      <select id="productSort" class="select" style="width: auto;">
+        <option value="default">Sort by</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="name">Name: A-Z</option>
+      </select>
     </section>
+    
+    <div class="category-filter-bar">
+      <button class="category-chip active" data-category="all">All</button>
+      <button class="category-chip" data-category="audio">Audio</button>
+      <button class="category-chip" data-category="wearables">Wearables</button>
+      <button class="category-chip" data-category="bags">Bags</button>
+      <button class="category-chip" data-category="footwear">Footwear</button>
+      <button class="category-chip" data-category="accessories">Accessories</button>
+      <button class="category-chip" data-category="lifestyle">Lifestyle</button>
+      <button class="category-chip" data-category="home">Home</button>
+      <button class="category-chip" data-category="clothing">Clothing</button>
+      <button class="category-chip" data-category="stationery">Stationery</button>
+      <button class="category-chip" data-category="lighting">Lighting</button>
+      <button class="category-chip" data-category="fitness">Fitness</button>
+      <button class="category-chip" data-category="decor">Decor</button>
+    </div>
+
     <section class="card">
       <h2>Products</h2>
       <div class="products-grid" id="productsGrid">
-<article class="product-card" data-id="p1" data-name="Wireless Earbuds" data-price="499.99" data-description="High-quality wireless earbuds with noise cancellation and 20-hour battery life. Perfect for music lovers on the go.">
+        <!-- Skeleton placeholders will be shown by JS initially -->
+<article class="product-card" data-id="p1" data-name="Wireless Earbuds" data-price="24.99" data-description="High-quality wireless earbuds with noise cancellation and 20-hour battery life. Perfect for music lovers on the go.">
+<div class="product-badge badge-new">New</div>
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/373945/pexels-photo-373945.jpeg" alt="Wireless Earbuds">
+<img class="product-image" src="https://images.pexels.com/photos/373945/pexels-photo-373945.jpeg" alt="Wireless Earbuds" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Wireless Earbuds</h3>
 <div class="product-category">Audio</div>
+<div class="product-rating">★★★★★ (4.8)</div>
 <div class="product-footer">
-<span class="price">R 499.99</span>
+<span class="price">$ 24.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p2" data-name="Smart Watch" data-price="899.99" data-description="Elegant smart watch with heart rate monitoring, GPS, and a sleek waterproof design. Stay connected and fit.">
+<article class="product-card" data-id="p2" data-name="Smart Watch" data-price="49.99" data-description="Elegant smart watch with heart rate monitoring, GPS, and a sleek waterproof design. Stay connected and fit.">
+<div class="product-badge badge-sale">-10%</div>
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/277406/pexels-photo-277406.jpeg" alt="Smart Watch">
+<img class="product-image" src="https://images.pexels.com/photos/277406/pexels-photo-277406.jpeg" alt="Smart Watch" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Smart Watch</h3>
 <div class="product-category">Wearables</div>
+<div class="product-rating">★★★★☆ (4.5)</div>
 <div class="product-footer">
-<span class="price">R 899.99</span>
+<span class="price">$ 49.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p3" data-name="Backpack" data-price="349.99" data-description="Durable everyday backpack with multiple compartments and a padded laptop sleeve. Ideal for students and commuters.">
+<article class="product-card" data-id="p3" data-name="Backpack" data-price="19.99" data-description="Durable everyday backpack with multiple compartments and a padded laptop sleeve. Ideal for students and commuters.">
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/374598/pexels-photo-374598.jpeg" alt="Backpack">
+<img class="product-image" src="https://images.pexels.com/photos/374598/pexels-photo-374598.jpeg" alt="Backpack" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Everyday Backpack</h3>
 <div class="product-category">Bags</div>
+<div class="product-rating">★★★★☆ (4.2)</div>
 <div class="product-footer">
-<span class="price">R 349.99</span>
+<span class="price">$ 19.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p4" data-name="Running Sneakers" data-price="799.99" data-description="Lightweight running sneakers with superior cushioning and grip. Designed for maximum performance and comfort.">
+<article class="product-card" data-id="p4" data-name="Running Sneakers" data-price="39.99" data-description="Lightweight running sneakers with superior cushioning and grip. Designed for maximum performance and comfort.">
+<div class="product-badge badge-new">New</div>
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/999309/pexels-photo-999309.jpeg" alt="Running Sneakers">
+<img class="product-image" src="https://images.pexels.com/photos/999309/pexels-photo-999309.jpeg" alt="Running Sneakers" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Running Sneakers</h3>
 <div class="product-category">Footwear</div>
+<div class="product-rating">★★★★★ (4.9)</div>
 <div class="product-footer">
-<span class="price">R 799.99</span>
+<span class="price">$ 39.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p5" data-name="Phone Case" data-price="149.99" data-description="Premium silicone phone case providing excellent drop protection and a soft-touch finish. Slim and stylish.">
+<article class="product-card" data-id="p5" data-name="Phone Case" data-price="9.99" data-description="Premium silicone phone case providing excellent drop protection and a soft-touch finish. Slim and stylish.">
+<div class="product-badge badge-sale">-20%</div>
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg" alt="Phone Case">
+<img class="product-image" src="https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg" alt="Phone Case" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Silicone Phone Case</h3>
 <div class="product-category">Accessories</div>
+<div class="product-rating">★★★★☆ (4.0)</div>
 <div class="product-footer">
-<span class="price">R 149.99</span>
+<span class="price">$ 9.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p6" data-name="Water Bottle" data-price="129.99" data-description="Stainless steel water bottle that keeps drinks cold for 24 hours. Eco-friendly and leak-proof.">
+<article class="product-card" data-id="p6" data-name="Water Bottle" data-price="12.99" data-description="Stainless steel water bottle that keeps drinks cold for 24 hours. Eco-friendly and leak-proof.">
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/3737653/pexels-photo-3737653.jpeg" alt="Water Bottle">
+<img class="product-image" src="https://images.pexels.com/photos/3737653/pexels-photo-3737653.jpeg" alt="Water Bottle" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Stainless Water Bottle</h3>
 <div class="product-category">Lifestyle</div>
+<div class="product-rating">★★★★★ (4.7)</div>
 <div class="product-footer">
-<span class="price">R 129.99</span>
+<span class="price">$ 12.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p7" data-name="Coffee Mug" data-price="89.99" data-description="Handcrafted ceramic coffee mug with a comfortable grip and a stylish matte finish. Dishwasher safe.">
+<article class="product-card" data-id="p7" data-name="Coffee Mug" data-price="7.99" data-description="Handcrafted ceramic coffee mug with a comfortable grip and a stylish matte finish. Dishwasher safe.">
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/4050312/pexels-photo-4050312.jpeg" alt="Coffee Mug">
+<img class="product-image" src="https://images.pexels.com/photos/4050312/pexels-photo-4050312.jpeg" alt="Coffee Mug" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Ceramic Coffee Mug</h3>
 <div class="product-category">Home</div>
+<div class="product-rating">★★★★☆ (4.4)</div>
 <div class="product-footer">
-<span class="price">R 89.99</span>
+<span class="price">$ 7.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p8" data-name="Comfy Hoodie" data-price="449.99" data-description="Ultra-soft fleece hoodie with a front pocket and adjustable drawstring. Perfect for cozy days.">
+<article class="product-card" data-id="p8" data-name="Comfy Hoodie" data-price="29.99" data-description="Ultra-soft fleece hoodie with a front pocket and adjustable drawstring. Perfect for cozy days.">
+<div class="product-badge badge-sale">-15%</div>
 <div class="product-image-wrapper">
-<img class="product-image" src="https://images.pexels.com/photos/6347853/pexels-photo-6347853.jpeg" alt="Comfy Hoodie">
+<img class="product-image" src="https://images.pexels.com/photos/6347853/pexels-photo-6347853.jpeg" alt="Comfy Hoodie" loading="lazy">
 </div>
 <div class="product-body">
 <h3 class="product-title">Comfy Hoodie</h3>
 <div class="product-category">Clothing</div>
+<div class="product-rating">★★★★★ (4.6)</div>
 <div class="product-footer">
-<span class="price">R 449.99</span>
+<span class="price">$ 29.99</span>
 <button class="button primary-button add-to-cart">Add</button>
 </div>
 </div>
 </article>
 
-<article class="product-card" data-id="p9" data-name="Notebook" data-price="59.99" data-description="Spiral-bound notebook with high-quality ruled paper. Ideal for journaling, sketching, or note-taking.">
-  <div class="product-image-wrapper">
-    <img class="product-image"
-         src="https://images.pexels.com/photos/6373305/pexels-photo-6373305.jpeg"
-         alt="Notebook">
-  </div>
-  <div class="product-body">
-    <h3 class="product-title">Spiral Notebook</h3>
-    <div class="product-category">Stationery</div>
-    <div class="product-footer">
-      <span class="price">R 59.99</span>
-      <button class="button primary-button add-to-cart">Add</button>
-    </div>
-  </div>
+<article class="product-card" data-id="p9" data-name="Notebook" data-price="4.99" data-description="Spiral-bound notebook with high-quality ruled paper. Ideal for journaling, sketching, or note-taking.">
+<div class="product-image-wrapper">
+<img class="product-image" src="https://images.pexels.com/photos/6373305/pexels-photo-6373305.jpeg" alt="Notebook" loading="lazy">
+</div>
+<div class="product-body">
+<h3 class="product-title">Spiral Notebook</h3>
+<div class="product-category">Stationery</div>
+<div class="product-rating">★★★★☆ (4.1)</div>
+<div class="product-footer">
+<span class="price">$ 4.99</span>
+<button class="button primary-button add-to-cart">Add</button>
+</div>
+</div>
 </article>
 
-<article class="product-card" data-id="p10" data-name="Smart LED Bulb" data-price="199.99" data-description="Energy-efficient smart LED bulb that can be controlled via smartphone. Change colors and set schedules easily.">
-  <div class="product-image-wrapper">
-    <img class="product-image"
-         src="https://images.pexels.com/photos/1036936/pexels-photo-1036936.jpeg"
-         alt="Smart LED Bulb">
-  </div>
-  <div class="product-body">
-    <h3 class="product-title">Smart LED Bulb</h3>
-    <div class="product-category">Lighting</div>
-    <div class="product-footer">
-      <span class="price">R 199.99</span>
-      <button class="button primary-button add-to-cart">Add</button>
-    </div>
-  </div>
+<article class="product-card" data-id="p10" data-name="Smart LED Bulb" data-price="14.99" data-description="Energy-efficient smart LED bulb that can be controlled via smartphone. Change colors and set schedules easily.">
+<div class="product-badge badge-new">New</div>
+<div class="product-image-wrapper">
+<img class="product-image" src="https://images.pexels.com/photos/1036936/pexels-photo-1036936.jpeg" alt="Smart LED Bulb" loading="lazy">
+</div>
+<div class="product-body">
+<h3 class="product-title">Smart LED Bulb</h3>
+<div class="product-category">Lighting</div>
+<div class="product-rating">★★★★☆ (4.3)</div>
+<div class="product-footer">
+<span class="price">$ 14.99</span>
+<button class="button primary-button add-to-cart">Add</button>
+</div>
+</div>
 </article>
 
-<article class="product-card" data-id="p11" data-name="Yoga Mat" data-price="299.99" data-description="Premium non-slip yoga mat with extra cushioning for joint support. Lightweight and easy to carry with the included strap.">
-  <div class="product-image-wrapper">
-    <img class="product-image"
-         src="https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg"
-         alt="Yoga Mat">
-  </div>
-  <div class="product-body">
-    <h3 class="product-title">Yoga Mat</h3>
-    <div class="product-category">Fitness</div>
-    <div class="product-footer">
-      <span class="price">R 299.99</span>
-      <button class="button primary-button add-to-cart">Add</button>
-    </div>
-  </div>
+<article class="product-card" data-id="p11" data-name="Yoga Mat" data-price="19.99" data-description="Premium non-slip yoga mat with extra cushioning for joint support. Lightweight and easy to carry with the included strap.">
+<div class="product-image-wrapper">
+<img class="product-image" src="https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg" alt="Yoga Mat" loading="lazy">
+</div>
+<div class="product-body">
+<h3 class="product-title">Yoga Mat</h3>
+<div class="product-category">Fitness</div>
+<div class="product-rating">★★★★★ (4.8)</div>
+<div class="product-footer">
+<span class="price">$ 19.99</span>
+<button class="button primary-button add-to-cart">Add</button>
+</div>
+</div>
 </article>
 
-<article class="product-card" data-id="p12" data-name="Desktop Lamp" data-price="399.99" data-description="Modern minimalist desktop lamp with adjustable brightness and a flexible neck. Perfect for late-night study or work.">
-  <div class="product-image-wrapper">
-    <img class="product-image"
-         src="https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg"
-         alt="Desktop Lamp">
-  </div>
-  <div class="product-body">
-    <h3 class="product-title">Desktop Lamp</h3>
-    <div class="product-category">Decor</div>
-    <div class="product-footer">
-      <span class="price">R 399.99</span>
-      <button class="button primary-button add-to-cart">Add</button>
-    </div>
-  </div>
+<article class="product-card" data-id="p12" data-name="Desktop Lamp" data-price="24.99" data-description="Modern minimalist desktop lamp with adjustable brightness and a flexible neck. Perfect for late-night study or work.">
+<div class="product-image-wrapper">
+<img class="product-image" src="https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg" alt="Desktop Lamp" loading="lazy">
+</div>
+<div class="product-body">
+<h3 class="product-title">Desktop Lamp</h3>
+<div class="product-category">Decor</div>
+<div class="product-rating">★★★★☆ (4.5)</div>
+<div class="product-footer">
+<span class="price">$ 24.99</span>
+<button class="button primary-button add-to-cart">Add</button>
+</div>
+</div>
 </article>
 </div>
+    </section>
+
+    <section class="info-section">
+      <article class="card info-card">
+        <h3 class="info-title">📍 About Our Store</h3>
+        <p class="info-body">We are a locally-owned retail business dedicated to bringing high-quality electronics and lifestyle products to your doorstep. Our mission is to provide an effortless mobile shopping experience for everyone.</p>
+      </article>
+      <article class="card info-card">
+        <h3 class="info-title">📞 Get In Touch</h3>
+        <p class="info-body">Have questions about your order? Reach out to us via WhatsApp at +233 53210 2856 or email us at support@eshop.com. We're here to help!</p>
+        <div class="contact-actions">
+          <a href="https://wa.me/233532102856" target="_blank" class="button primary-button contact-btn wa-btn">
+            <span>WhatsApp Us</span>
+          </a>
+          <a href="mailto:support@eshop.com" class="button secondary-button contact-btn email-btn">
+            <span>Email Support</span>
+          </a>
+        </div>
+      </article>
     </section>
   </div>
 
   <div id="cartSection" class="shop-section">
     <section class="card cart-card">
-      <h2>Cart & Payment</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">Cart & Payment</h2>
+        <button id="clearCartBtn" class="button secondary-button" style="padding:4px 12px; font-size:11px;">Clear</button>
+      </div>
       <div class="cart-items" id="cartItems"></div>
       <div class="cart-total-row">
         <span>Total</span>
-        <span id="cartTotal">R 0.00</span>
+        <span id="cartTotal">$ 0.00</span>
       </div>
+      <div class="demo-tag" style="font-size: 11px; margin-bottom: 12px;">Demo Mode: Payments are simulated for this prototype.</div>
       <div class="form" style="margin-top:12px;">
         <button id="placeOrderButton" class="button primary-button">Pay & place order</button>
         <button id="signOutButton" class="button secondary-button">Sign out</button>
@@ -223,15 +293,57 @@
 
   <div id="ordersSection" class="shop-section">
     <section class="card cart-card">
-      <h2>Order History</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">Order History</h2>
+        <button id="clearHistoryBtn" class="button secondary-button" style="padding:4px 12px; font-size:11px;">Clear History</button>
+      </div>
       <div id="orderHistoryList" class="order-history-list">
         <div class="loading-text">Loading orders...</div>
       </div>
     </section>
   </div>
 </main>
+
+<footer class="app-footer">
+  <div class="footer-links">
+    <a href="#" class="footer-link">Returns & Refunds</a>
+    <a href="#" class="footer-link">Privacy Policy</a>
+    <a href="mailto:support@eshop.com" class="footer-link">Email Us</a>
+    <a href="https://wa.me/233532102856" target="_blank" class="footer-link">WhatsApp Support</a>
+  </div>
+  <div class="trust-bar">
+    <div class="trust-item"><img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe"></div>
+    <div class="trust-item"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"></div>
+    <div class="trust-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"></div>
+  </div>
+  <p>&copy; 2024 E-Shop Mobile. Built for Academic Prototype.</p>
+</footer>
 </div>
+
+<a href="https://wa.me/233532102856" target="_blank" id="floatingWA" class="floating-wa">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Support">
+</a>
+
 <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Sticky Mobile Bar -->
+  <div id="stickyBar" class="sticky-bar">
+    <div class="sticky-info">
+      <span id="stickyItemCount">0</span> items • <span id="stickyTotal" class="sticky-total">$ 0.00</span>
+    </div>
+    <button id="stickyGoToCart" class="button primary-button" style="padding: 6px 16px; font-size: 12px;">View Cart</button>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confModal" class="conf-modal">
+    <div class="conf-card">
+      <div class="conf-icon">✓</div>
+      <h2 class="conf-title">Order Confirmed!</h2>
+      <p class="conf-text">Thank you for your purchase. Your order has been placed and is being processed.</p>
+      <div id="confOrderRef" style="font-size: 11px; color: var(--text-muted); margin-bottom: 20px;">Ref: #...</div>
+      <button id="confClose" class="button primary-button" style="width: 100%;">See my orders</button>
+    </div>
+  </div>
 
   <!-- Lightbox Modal -->
   <div id="productLightbox" class="lightbox-modal">
@@ -245,6 +357,14 @@
           <h2 id="lightboxTitle"></h2>
           <div id="lightboxCategory" class="product-category"></div>
           <p id="lightboxDescription"></p>
+          <div class="quantity-selector" style="margin-bottom: 20px;">
+            <label class="label">Quantity</label>
+            <div class="qty-controls">
+              <button id="qtyDec" class="qty-btn">−</button>
+              <input id="lightboxQty" type="number" class="qty-input" value="1" min="1" readonly>
+              <button id="qtyInc" class="qty-btn">+</button>
+            </div>
+          </div>
           <div class="lightbox-footer">
             <span id="lightboxPrice" class="price"></span>
             <button id="lightboxAddToCart" class="button primary-button">Add to cart</button>
